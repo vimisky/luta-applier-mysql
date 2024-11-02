@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>事务详情</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui-v2.8.17/layui/css/layui.css}"/>
+    <script type="text/javascript" th:src="@{/layui-v2.8.17/layui/layui.js}"></script>
+
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+        td, th{
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+
+<div class="" >
+
+    <table class="layui-table">
+        <tbody>
+
+        <tr>
+            <td>ID</td>
+            <td th:text="${trx.id}"></td>
+        </tr>
+        <tr>
+            <td>通道ID</td>
+            <td th:text="${trx.applierChannelId}"></td>
+        </tr>
+        <tr>
+            <td>serverId</td>
+            <td th:text="${trx.serverId}"></td>
+        </tr>
+        <tr>
+            <td>binlogFilename</td>
+            <td th:text="${trx.binlogFilename}"></td>
+        </tr>
+        <tr>
+            <td>binlog nextPosition</td>
+            <td th:text="${trx.nextPosition}"></td>
+        </tr>
+        <tr>
+            <td>事务ID</td>
+            <td th:text="${trx.xid}"></td>
+        </tr>
+        <tr>
+            <td>执行状态</td>
+            <td th:text="${trx.applierStatus}"></td>
+        </tr>
+        <tr>
+            <td>执行时间</td>
+            <td th:text="${trx.applierTime}"></td>
+        </tr>
+        <tr>
+            <td>是否为DML</td>
+            <td th:text="${trx.dml}"></td>
+        </tr>
+        <tr>
+            <td>DDL语句</td>
+            <td th:text="${trx.ddlSql}"></td>
+        </tr>        <tr>
+            <td>源库名</td>
+            <td th:text="${trx.schemaName}"></td>
+        </tr>        <tr>
+            <td>源表名</td>
+            <td th:text="${trx.tableName}"></td>
+        </tr>
+        <tr>
+            <td>本地库名</td>
+            <td th:text="${trx.mappingSchemaName}"></td>
+        </tr>
+        <tr>
+            <td>本地表名</td>
+            <td th:text="${trx.mappingTableName}"></td>
+        </tr>
+        <tr>
+            <td>CRUD</td>
+            <td th:text="${trx.type}"></td>
+        </tr>
+        <tr>
+            <td>字段</td>
+            <td th:text="${trx.columnNameList}"></td>
+        </tr>
+        <tr>
+            <td>数据</td>
+            <td th:text="${trx.columnValueList}"></td>
+        </tr>
+        <tr>
+            <td>更新前数据</td>
+            <td th:text="${trx.oldColumnValueList}"></td>
+        </tr>
+        <tr>
+            <td>SQL</td>
+            <td th:text="${trx.sql}"></td>
+        </tr>
+        <tr>
+            <td>创建时间</td>
+            <td th:text="${#dates.format(trx.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        <tr>
+            <td>更新时间</td>
+            <td th:text="${#dates.format(trx.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
+</body>
+</html>

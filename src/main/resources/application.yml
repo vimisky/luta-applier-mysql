@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: MySQL数据同步工具 Applier端
+  profiles:
+    active: prod
+management:
+  health:
+    rabbit:
+      enabled: false
+logging:
+  file:
+    name: "./luta-applier-mysql.log"
+  level:
+    root: info
+  logback:
+    rollingpolicy:
+      max-history: 7
+      total-size-cap: 10GB
+      max-file-size: 1GB

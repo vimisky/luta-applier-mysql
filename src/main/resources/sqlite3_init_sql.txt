@@ -1,0 +1,123 @@
+alter table t_applier_config rename to t_applier_config_old;
+
+
+create table `t_applier_config` (
+  `id` integer primary key asc autoincrement,
+  `name` text,
+  `description` text,
+  `src_message_queue_type` integer,
+  `src_url` text,
+  `src_username` text,
+  `src_password` text,
+  `src_queue_name` text,
+  `dst_driver_class_name` text,
+  `dst_url` text,
+  `dst_username` text,
+  `dst_password` text,
+  `create_time` integer,
+  `update_time` integer
+) if not exists `t_applier_config`;
+
+
+insert into `t_applier_config`(
+`id`,`name`,`src_message_queue_type`,`src_url`,`src_username`,`src_password`,
+`src_queue_name`,`dst_driver_class_name`,`dst_url`, `dst_username`,
+`dst_password`,`create_time`,`update_time`) select `id`,`name`,`src_message_queue_type`,`src_url`,`src_username`,`src_password`,
+`src_queue_name`,`dst_driver_class_name`,`dst_url`, `dst_username`,
+`dst_password`,`create_time`,`update_time` from `t_applier_config_old`;
+DROP table `t_applier_config_old`;
+
+INSERT INTO t_applier_config (name,src_message_queue_type,src_url,src_username,src_password,src_queue_name,dst_driver_class_name,dst_url,dst_username,dst_password,create_time,update_time) VALUES
+	 ('cmpv2_bj2ld',0,'amqp://172.21.232.59:45672/%2Fcmp','ibase','xNsktuosS607sMjO','mysql.queue.unisetup.sync','com.mysql.jdbc.Driver','jdbc:mysql://127.0.0.1:13308/ibase_monitor','datasyncer','sNz5ErPQClnwJEiO',1693397690307,1693397690307);
+
+
+------------
+v2
+------------
+
+DROP TABLE `t_applier_channel`;
+--- 创建表
+CREATE TABLE IF NOT EXISTS `t_applier_channel` (
+    `id` integer primary key asc autoincrement,
+    `name` text,
+    `description` text,
+    `src_message_queue_type` integer,
+    `src_host` text,
+    `src_port` integer,
+    `src_vhost` text,
+    `src_username` text,
+    `src_password` text,
+    `src_queue_name` text,
+    `dst_driver_class_name` text,
+    `dst_host` text,
+    `dst_port` integer,
+    `dst_username` text,
+    `dst_password` text,
+    `create_time` integer,
+    `update_time` integer
+);
+
+DROP TABLE `t_applier_task`;
+CREATE TABLE IF NOT EXISTS `t_applier_task` (
+    `id` integer primary key asc autoincrement,
+    `uuid` text,
+    `applier_channel_id` integer,
+    `heartbeat_timestamp` integer,
+    `execute_node` text,
+    `execute_start_time` integer,
+    `execute_stop_time` integer,
+    `execute_status` integer,
+    `execute_message` text,
+    `last_message_time` integer,
+    `last_applier_trx_time` integer,
+    `last_applier_trx` text,
+    `rec_binlog_filename` text,
+    `rec_binlog_next_position` integer,
+    `rec_gtid_next` text,
+    `rec_xid` integer,
+    `create_time` integer,
+    `update_time` integer
+);
+
+DROP TABLE `t_applier_transaction`;
+CREATE TABLE IF NOT EXISTS `t_applier_transaction` (
+    `id` integer primary key asc autoincrement,
+    `applier_channel_id` integer,
+    `applier_time` integer,
+    `applier_status` integer,
+    `dml` integer,
+    `ddl_sql` text,
+    `server_id` integer,
+    `binlog_filename` text,
+    `next_position` integer,
+    `xid` integer,
+    `schema_name` text,
+    `table_name` text,
+    `mapping_schema_name` text,
+    `mapping_table_name` text,
+    `type` text,
+    `column_name_list` text,
+    `column_value_list` text,
+    `old_column_name_list` text,
+    `old_column_value_list` text,
+    `sql` text,
+    `create_time` integer,
+    `update_time` integer
+);
+
+
+//type: 0: schema; 1: table;
+DROP TABLE `t_applier_mapping`;
+CREATE TABLE IF NOT EXISTS `t_applier_mapping` (
+    `id` integer primary key asc autoincrement,
+    `applier_channel_id` integer,
+    `type` integer,
+    `src_schema_name` text,
+    `src_table_name` text,
+    `dst_schema_name` text,
+    `dst_table_name` text,
+    `create_time` integer,
+    `update_time` integer
+);
+
+

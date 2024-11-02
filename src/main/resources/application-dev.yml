@@ -1,0 +1,19 @@
+
+spring:
+  datasource:
+    driver-class-name: "org.sqlite.JDBC"
+    url: "jdbc:sqlite:D:\\luta_applier_mysql.db"
+    username: ""
+    password: ""
+    maxActive: 1
+    initialSize: 1
+server:
+  port: 18082
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: io.github.vimisky.luta.applier.mysql.entity
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+    root: info

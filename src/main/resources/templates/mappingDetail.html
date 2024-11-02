@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>映射规则详情</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui-v2.8.17/layui/css/layui.css}"/>
+    <script type="text/javascript" th:src="@{/layui-v2.8.17/layui/layui.js}"></script>
+
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+        td, th{
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+
+<div class="" >
+
+    <table class="layui-table">
+        <tbody>
+
+        <tr>
+            <td>ID</td>
+            <td th:text="${applierMapping.id}"></td>
+        </tr>
+        <tr>
+            <td>类型</td>
+            <td th:text="${applierMapping.type}?'表':'库'"></td>
+        </tr>
+        <tr>
+            <td>源库名</td>
+            <td th:text="${applierMapping.srcSchemaName}"></td>
+        </tr>
+        <tr>
+            <td>源表名</td>
+            <td th:text="${applierMapping.srcTableName}"></td>
+        </tr>
+        <tr>
+            <td>目标库名</td>
+            <td th:text="${applierMapping.dstSchemaName}"></td>
+        </tr>
+        <tr>
+            <td>目标表名</td>
+            <td th:text="${applierMapping.dstTableName}"></td>
+        </tr>
+        <tr>
+            <td>创建时间</td>
+            <td th:text="${#dates.format(applierMapping.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        <tr>
+            <td>更新时间</td>
+            <td th:text="${#dates.format(applierMapping.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
+</body>
+</html>

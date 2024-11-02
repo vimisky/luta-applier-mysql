@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vimisky.luta.applier.mysql.dao.LutaApplierMappingMapper">
+    <resultMap id="lutaApplierMappingResultMap" type="io.github.vimisky.luta.applier.mysql.entity.LutaApplierMapping">
+        <id property="id" column="id" />
+        <result property="applierChannelId" column="applier_channel_id"/>
+        <result property="type" column="type"/>
+        <result property="srcSchemaName" column="src_schema_name"/>
+        <result property="srcTableName" column="src_table_name"/>
+        <result property="dstSchemaName" column="dst_schema_name"/>
+        <result property="dstTableName" column="dst_table_name"/>
+
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="findById" resultMap="lutaApplierMappingResultMap">
+        select `id`, `applier_channel_id`,`type`,
+        `src_schema_name`, `src_table_name`, `dst_schema_name`,`dst_table_name`,
+        `create_time`,`update_time`
+        from `t_applier_mapping`
+        where `id` = #{id}
+    </select>
+    <select id="findByApplierChannelId" resultMap="lutaApplierMappingResultMap">
+        select `id`, `applier_channel_id`,`type`,
+        `src_schema_name`, `src_table_name`, `dst_schema_name`,`dst_table_name`,
+        `create_time`,`update_time`
+        from `t_applier_mapping`
+        where `applier_channel_id` = #{applierChannelId}
+    </select>
+    <select id="findBySchemaName" resultMap="lutaApplierMappingResultMap">
+        select `id`, `applier_channel_id`,`type`,
+        `src_schema_name`, `src_table_name`, `dst_schema_name`,`dst_table_name`,
+        `create_time`,`update_time`
+        from `t_applier_mapping`
+        where `applier_channel_id` = #{applierChannelId} and `type` = 0 and `src_schema_name` = #{srcSchemaName}
+    </select>
+    <select id="findByTableName" resultMap="lutaApplierMappingResultMap">
+        select `id`, `applier_channel_id`,`type`,
+        `src_schema_name`, `src_table_name`, `dst_schema_name`,`dst_table_name`,
+        `create_time`,`update_time`
+        from `t_applier_mapping`
+        where `applier_channel_id` = #{applierChannelId} and `type` = 1 and `src_schema_name` = #{srcSchemaName} and `src_table_name` = #{srcTableName}
+    </select>
+    <select id="findAll" resultMap="lutaApplierMappingResultMap">
+        select `id`, `applier_channel_id`,`type`,
+        `src_schema_name`, `src_table_name`, `dst_schema_name`,`dst_table_name`,
+        `create_time`,`update_time`
+        from `t_applier_mapping`
+    </select>
+    <insert id="insert" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        insert into `t_applier_mapping` (
+        `applier_channel_id`,`type`,
+        `src_schema_name`, `src_table_name`, `dst_schema_name`,`dst_table_name`,
+        `create_time`,`update_time`) values (
+        #{applierChannelId}, #{type},
+        #{srcSchemaName},#{srcTableName},#{dstSchemaName},#{dstTableName},
+        datetime('now','localtime'),datetime('now','localtime'))
+    </insert>
+    <update id="update">
+        update `t_applier_mapping` set
+        `applier_channel_id` = #{applierChannelId},
+        `type` = #{type},
+        `src_schema_name` = #{srcSchemaName},
+        `src_table_name` = #{srcTableName},
+        `dst_schema_name` = #{dstSchemaName},
+        `dst_table_name` = #{dstTableName},
+<!--        `create_time` = #{createTime},-->
+<!--        https://www.sqlite.org/lang_datefunc.html-->
+        `update_time` = datetime('now','localtime')
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from `t_applier_mapping` where id = #{id}
+    </delete>
+</mapper>

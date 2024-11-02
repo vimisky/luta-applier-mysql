@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vimisky.luta.applier.mysql.dao.LutaApplierTaskMapper">
+    <resultMap id="lutaApplierTaskResultMap" type="io.github.vimisky.luta.applier.mysql.entity.LutaApplierTask">
+        <id property="id" column="id" />
+        <result property="uuid" column="uuid"/>
+        <result property="applierChannelId" column="applier_channel_id"/>
+        <result property="heartbeatTimestamp" column="heartbeat_timestamp"/>
+        <result property="executeNode" column="execute_node"/>
+        <result property="executeStartTime" column="execute_start_time"/>
+        <result property="executeStopTime" column="execute_stop_time"/>
+        <result property="executeStatus" column="execute_status"/>
+        <result property="executeMessage" column="execute_message"/>
+        <result property="lastMessageTime" column="last_message_time"/>
+        <result property="lastApplierTrxTime" column="last_applier_trx_time"/>
+        <result property="lastApplierTrx" column="last_applier_trx"/>
+        <result property="recBinlogFilename" column="rec_binlog_filename"/>
+        <result property="recBinlogNextPosition" column="rec_binlog_next_position"/>
+        <result property="recGtidNext" column="rec_gtid_next"/>
+        <result property="recXid" column="rec_xid"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="findById" resultMap="lutaApplierTaskResultMap">
+        select `id`, `uuid`, `applier_channel_id`,`heartbeat_timestamp`,
+        `execute_node`, `execute_start_time`, `execute_stop_time`,`execute_status`, `execute_message`,`last_message_time`,
+        `last_applier_trx_time`,`last_applier_trx`,`rec_binlog_filename`, `rec_binlog_next_position`, `rec_gtid_next`, `rec_xid`, `create_time`,`update_time`
+        from `t_applier_task`
+        where `id` = #{id}
+    </select>
+    <select id="findByUuid" resultMap="lutaApplierTaskResultMap">
+        select `id`, `uuid`, `applier_channel_id`,`heartbeat_timestamp`,
+        `execute_node`, `execute_start_time`, `execute_stop_time`,`execute_status`, `execute_message`,`last_message_time`,
+        `last_applier_trx_time`,`last_applier_trx`,`rec_binlog_filename`, `rec_binlog_next_position`, `rec_gtid_next`, `rec_xid`, `create_time`,`update_time`
+        from `t_applier_task`
+        where `uuid` = #{uuid}
+    </select>
+    <select id="findByApplierChannelId" resultMap="lutaApplierTaskResultMap">
+        select `id`, `uuid`, `applier_channel_id`,`heartbeat_timestamp`,
+        `execute_node`, `execute_start_time`, `execute_stop_time`,`execute_status`, `execute_message`,`last_message_time`,
+        `last_applier_trx_time`,`last_applier_trx`,`rec_binlog_filename`, `rec_binlog_next_position`, `rec_gtid_next`, `rec_xid`, `create_time`,`update_time`
+        from `t_applier_task`
+        where `applier_channel_id` = #{applierChannelId}
+    </select>
+    <select id="findAll" resultMap="lutaApplierTaskResultMap">
+        select `id`, `uuid`, `applier_channel_id`,`heartbeat_timestamp`,
+        `execute_node`, `execute_start_time`, `execute_stop_time`,`execute_status`, `execute_message`,`last_message_time`,
+        `last_applier_trx_time`,`last_applier_trx`,`rec_binlog_filename`, `rec_binlog_next_position`, `rec_gtid_next`, `rec_xid`, `create_time`,`update_time`
+        from `t_applier_task`
+    </select>
+    <insert id="insert" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        insert into `t_applier_task` (
+        `uuid`, `applier_channel_id`,`heartbeat_timestamp`,
+        `execute_node`, `execute_start_time`, `execute_stop_time`,`execute_status`, `execute_message`,`last_message_time`,
+        `last_applier_trx_time`,`last_applier_trx`,`rec_binlog_filename`, `rec_binlog_next_position`, `rec_gtid_next`, `rec_xid`,`create_time`,`update_time`) values (
+        #{uuid}, #{applierChannelId}, #{heartbeatTimestamp},
+        #{executeNode},#{executeStartTime},#{executeStopTime},#{executeStatus},#{executeMessage},#{lastMessageTime},
+        #{lastApplierTrxTime},#{lastApplierTrx},#{recBinlogFilename},#{recBinlogNextPosition},#{recGtidNext},#{recXid},datetime('now','localtime'),datetime('now','localtime'))
+    </insert>
+    <update id="update">
+        update `t_applier_task` set
+        `uuid` = #{uuid},
+        `applier_channel_id` = #{applierChannelId},
+        `heartbeat_timestamp` = #{heartbeatTimestamp},
+        `execute_node` = #{executeNode},
+        `execute_start_time` = #{executeStartTime},
+        `execute_stop_time` = #{executeStopTime},
+        `execute_status` = #{executeStatus},
+        `execute_message` = #{executeMessage},
+        `last_message_time` = #{lastMessageTime},
+        `last_applier_trx_time` = #{lastApplierTrxTime},
+        `last_applier_trx` = #{lastApplierTrx},
+        `rec_binlog_filename` = #{recBinlogFilename},
+        `rec_binlog_next_position` = #{recBinlogNextPosition},
+        `rec_gtid_next` = #{recGtidNext},
+        `rec_xid` = #{recXid},
+<!--        `create_time` = #{createTime},-->
+<!--        https://www.sqlite.org/lang_datefunc.html-->
+        `update_time` = datetime('now','localtime')
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from `t_applier_task` where id = #{id}
+    </delete>
+</mapper>

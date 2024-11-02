@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>事务列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui-v2.8.17/layui/css/layui.css}"/>
+    <script type="text/javascript" th:src="@{/layui-v2.8.17/layui/layui.js}"></script>
+
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+        td, th{
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+
+<div style="padding: 16px;">
+    <table class="layui-hide" id="listTable" lay-filter="listTableFilter"></table>
+</div>
+
+<script type="text/html" id="listToolbar">
+    <div class="layui-btn-container">
+<!--        <button class="layui-btn layui-btn-sm" lay-event="runSQLEvent">执行选中事务</button>-->
+    </div>
+</script>
+<script type="text/html" id="operateBar">
+    <div class="layui-clear-space">
+<!--        <a class="layui-btn layui-btn-xs" lay-event="editEvent">编辑</a>-->
+        <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="detailEvent">详细</a>
+        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="ignoreEvent">忽略</a>
+<!--        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="resetEvent">重置</a>-->
+<!--        <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="applierEvent">执行</a>-->
+        <a class="layui-btn layui-btn-xs" lay-event="moreEvent">
+            更多
+            <i class="layui-icon layui-icon-down"></i>
+        </a>
+    </div>
+</script>
+<script type="text/html" id="sqlData">
+
+</script>
+<script>
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    function ignoreTrx(id, okCallback, failCallback){
+        // 创建 XMLHttpRequest，相当于打开浏览器
+        const xhr = new XMLHttpRequest();
+        // 打开一个与网址之间的连接   相当于输入网址
+        // 利用open（）方法，第一个参数是对数据的操作，第二个是接口
+        xhr.open("POST", "/api/trx/status", true);
+        // xhr.setRequestHeader("Content-Type", "application/json");
+        // 定义 POST 请求的数据
+        const data = JSON.stringify({
+            "id": id,
+            "status": 2
+        });
+        const formdata = new FormData();
+        formdata.append("id", id);
+        formdata.append("status", 2);
+        // 通过连接发送请求  相当于点击回车或者链接
+        xhr.send(formdata);
+        // 指定 xhr 状态变化事件处理函数   相当于处理网页呈现后的操作
+        // 全小写
+        xhr.onreadystatechange = function () {
+            // 通过readyState的值来判断获取数据的情况
+            if (this.readyState === XMLHttpRequest.DONE) {
+
+                // 响应体的文本 responseText
+                // console.log(this.responseText, this.response);
+                // layer.alert(this.responseText);
+                if (this.status == 200){
+                    let responseObj = JSON.parse(this.responseText);
+                    if (responseObj.success){
+                        okCallback(responseObj);
+                    }else {
+                        failCallback(this.responseText);
+                    }
+                }else {
+                    failCallback(this.responseText);
+                }
+
+            }
+        };
+    }
+    function resetTrx(id, okCallback, failCallback){
+        // 创建 XMLHttpRequest，相当于打开浏览器
+        const xhr = new XMLHttpRequest();
+        // 打开一个与网址之间的连接   相当于输入网址
+        // 利用open（）方法，第一个参数是对数据的操作，第二个是接口
+        xhr.open("POST", "/api/trx/status", true);
+        // xhr.setRequestHeader("Content-Type", "application/json");
+        // 定义 POST 请求的数据
+        const data = JSON.stringify({
+            "id": id,
+            "status": 0
+        });
+        const formdata = new FormData();
+        formdata.append("id", id);
+        formdata.append("status", 0);
+        // 通过连接发送请求  相当于点击回车或者链接
+        xhr.send(formdata);
+        // 指定 xhr 状态变化事件处理函数   相当于处理网页呈现后的操作
+        // 全小写
+        xhr.onreadystatechange = function () {
+            // 通过readyState的值来判断获取数据的情况
+            if (this.readyState === XMLHttpRequest.DONE) {
+
+                // 响应体的文本 responseText
+                // console.log(this.responseText, this.response);
+                // layer.alert(this.responseText);
+                if (this.status == 200){
+                    let responseObj = JSON.parse(this.responseText);
+                    if (responseObj.success){
+                        okCallback(responseObj);
+                    }else {
+                        failCallback(this.responseText);
+                    }
+                }else {
+                    failCallback(this.responseText);
+                }
+
+            }
+        };
+    }
+
+    function applyTrx(id, okCallback, failCallback){
+        // 创建 XMLHttpRequest，相当于打开浏览器
+        const xhr = new XMLHttpRequest();
+        // 打开一个与网址之间的连接   相当于输入网址
+        // 利用open（）方法，第一个参数是对数据的操作，第二个是接口
+        xhr.open("POST", "/api/trx/apply", true);
+        // xhr.setRequestHeader("Content-Type", "application/json");
+        // 定义 POST 请求的数据
+        const data = JSON.stringify({
+            "id": id
+        });
+        const formdata = new FormData();
+        formdata.append("id", id);
+        // formdata.append("status", 2);
+        // 通过连接发送请求  相当于点击回车或者链接
+        xhr.send(formdata);
+        // 指定 xhr 状态变化事件处理函数   相当于处理网页呈现后的操作
+        // 全小写
+        xhr.onreadystatechange = function () {
+            // 通过readyState的值来判断获取数据的情况
+            if (this.readyState === XMLHttpRequest.DONE) {
+
+                // 响应体的文本 responseText
+                // console.log(this.responseText, this.response);
+                // layer.alert(this.responseText);
+                if (this.status == 200){
+                    let responseObj = JSON.parse(this.responseText);
+                    if (responseObj.success){
+                        okCallback(responseObj);
+                    }else {
+                        failCallback(this.responseText);
+                    }
+                }else {
+                    failCallback(this.responseText);
+                }
+
+            }
+        };
+    }
+
+    layui.use(['table', 'dropdown'], function(){
+        var table = layui.table;
+        var dropdown = layui.dropdown;
+        var layer = layui.layer;
+        var util = layui.util;
+
+        // 创建渲染实例
+        table.render({
+            elem: '#listTable',
+            id: 'listTableId',
+            url: '/api/trx/list',
+            where: {
+                'applierChannelId': getQueryParam('applierChannelId')
+            },
+            toolbar: '#listToolbar',
+            // defaultToolbar: ['filter', 'exports', 'print', {
+            //     title: '提示',
+            //     layEvent: 'LAYTABLE_TIPS',
+            //     icon: 'layui-icon-tips'
+            // }],
+            // height: 'full-35', // 最大高度减去其他容器已占有的高度差
+            // cellMinWidth: 10,
+            // lineStyle: 'height: 200px;',
+            page: true,
+            css: [ // 重设当前表格样式
+                '.layui-table-tool-temp{padding-right: 145px;}',
+                // '.layui-table-cell {line-height: 20px !important;vertical-align: middle;height: auto;overflow: visible;text-overflow: inherit;white-space: normal;}',
+                '.layui-table-cell {height: auto ;white-space: normal;word-wrap:break-word;}'
+            ].join(''),
+            cols: [  [
+                {type: 'checkbox'},
+
+                {field:'id', hide: true,
+                    templet: function(data){return data.id; },
+                    width: 30, title: 'ID'},
+                {field:'applierChannelId', hide: true,
+                    templet: function(data){
+                        return data.applierChannelId; },
+                    width: 30, title: '通道ID'},
+                {field:'serverId', hide: true,
+                    templet: function(data){
+                        return data.serverId; },
+                    title: 'serverId'},
+                {field:'binlogFilename', hide: true,
+                    templet: function(data){
+                        return data.binlogFilename; },
+                    title: 'binlogFilename'},
+                {field:'nextPosition', hide: true,
+                    templet: function(data){
+                        return data.nextPosition; },
+                    title: 'nextPosition'},
+                {field:'xid',
+                    templet: function(data){
+                        return data.xid; },
+                    width: 85, title: '事务ID'},
+                {field:'applierStatus',
+                    templet: function(data){
+                        return data.applierStatus; },
+                    width: 85, title: '状态'},
+                {field:'applierTime',hide: true,
+                    templet: function(data){
+                        return data.applierTime?data.applierTime:""; },
+                    title: '执行时间'},
+                {field:'dml',hide: true,
+                    templet: function(data){
+                        return data.dml?"DML":"DDL"; },
+                    title: '类型'},
+                {field:'ddlSql',hide: true,
+                    templet: function(data){
+                        return data.ddlSql; },
+                    title: 'DDL'},
+                // {field:'schemaName',hide: true,
+                //     templet: function(data){
+                //         return data.schemaName; },
+                //     title: '源库名'},
+                {hide: true,
+                    templet: function(data){
+                        return data.schemaName + "." + data.tableName; },
+                    title: '源表名'},
+                // {field:'mappingSchemaName',
+                //     templet: function(data){
+                //         return data.mappingSchemaName; },
+                //     title: '本地库名'},
+                {
+                    templet: function(data){
+                        return data.mappingSchemaName + "."+ data.mappingTableName; },
+                    width: 200, title: '本地表名'},
+                {field:'type',
+                    templet: function(data){
+                        return data.type; },
+                    width: 80, title: 'CRUD'},
+                { hide: true,
+                    templet: function(data){
+                        let html_table_start = '<table class="layui-table"><tbody>';
+                        let html_table_end = '</tbody></table>';
+                        let html_tr = '';
+                        let columnNameListString = data.columnNameList;
+                        let columnNameList ;
+                        let columnValueListString = data.columnValueList;
+                        let columnValueList = [];
+                        let oldColumnNameListString = data.oldColumnNameList;
+                        let oldColumnNameList = [];
+                        let oldColumnValueListString = data.oldColumnValueList;
+                        let oldColumnValueList = [];
+                        switch (data.type) {
+                            case "insert":
+                            case "delete":
+                                columnNameList = columnNameListString.split(/,/);
+                                columnValueList = columnValueListString.split(/,/);
+                                html_tr+='<tr>';
+                                columnNameList.forEach(function(element) {
+                                    html_tr+='<td>'+element+'</td>';
+                                });
+                                html_tr+='</tr>';
+                                html_tr+='<tr>';
+                                columnValueList.forEach(function(element) {
+                                    html_tr+='<td>'+element+'</td>';
+                                });
+                                html_tr+='</tr>';
+                                break;
+                            case "update":
+                                columnNameList = columnNameListString.split(/,/);
+                                columnValueList = columnValueListString.split(/,/);
+                                oldColumnNameList = oldColumnNameListString.split(/,/);
+                                oldColumnValueList = oldColumnValueListString.split(/,/);
+                                html_tr+='<tr>';
+                                columnNameList.forEach(function(element) {
+                                    html_tr+='<td>'+element+'</td>';
+                                });
+                                html_tr+='</tr>';
+                                html_tr+='<tr>';
+                                oldColumnValueList.forEach(function(element) {
+                                    html_tr+='<td>'+element+'</td>';
+                                });
+                                html_tr+='</tr>';
+                                html_tr+='<tr>';
+                                columnValueList.forEach(function(element) {
+                                    html_tr+='<td>'+element+'</td>';
+                                });
+                                html_tr+='</tr>';
+                                break;
+                            default:
+                                break;
+                        }
+                        return html_table_start+html_tr+html_table_end;
+                    },
+                    title: 'SQL数据'},
+                {field:'sql',
+                    templet: function(data){
+                    let ret = data.sql;
+                    if (data.sql!=null && data.sql.length>300){
+                        ret = data.sql.substring(0,300) + "...";
+                    }
+                        return ret; },
+                title: 'SQL'},
+                {field:'createTime', hide: true,
+                    templet: function(data){return data.createTime?data.createTime:""; },
+                    title: '创建时间'},
+                {field:'updateTime', hide: true,
+                    templet: function(data){return data.updateTime?data.updateTime:""; },
+                    title: '更新时间'},
+
+
+                {fixed: 'right', width: 200, title:'操作', toolbar: '#operateBar'}
+            ]  ],
+            done: function(){
+                var id = this.id;
+
+            },
+            error: function(res, msg){
+                console.log(res, msg)
+            }
+        });
+
+        // 工具栏事件
+        table.on('toolbar(listTableFilter)', function(obj){
+            var id = obj.config.id;
+            var checkStatus = table.checkStatus(id);
+            var othis = lay(this);
+
+            console.log("obj:" + obj);
+            switch(obj.event){
+                // case 'createEvent':
+                //     break;
+                case 'LAYTABLE_TIPS':
+                    layer.alert('自定义工具栏图标按钮');
+                    break;
+            };
+        });
+
+
+        // 触发单元格工具事件
+        table.on('tool(listTableFilter)', function(obj){ // 双击 toolDouble
+            var data = obj.data; // 获得当前行数据
+            switch (obj.event) {
+
+                case 'detailEvent':
+                    layer.open({
+                        type:2,
+                        area: ['600px','600px'],
+                        content: '/console/trx/detail?id='+data.id
+                    });
+                    break;
+                case 'ignoreEvent':
+                    ignoreTrx(data.id, function (obj) {
+                        table.reload('listTableId');
+                        layer.alert("事务"+data.id+"已忽略");
+                    }, function (err) {
+                        layer.alert("事务"+data.id+"忽略失败");
+                        console.log(err);
+                    });
+                    break;
+                case 'moreEvent':
+                    dropdown.render({
+                        elem: this, // 触发事件的 DOM 对象
+                        show: true, // 外部事件触发即显示
+                        data: [{
+                            title: '重置',
+                            id: 'reset'
+                        },{
+                            title: '手工执行',
+                            id: 'apply'
+                        }],
+                        click: function(menudata){
+                            if(menudata.id === 'reset'){
+                                resetTrx(data.id, function (obj) {
+                                    table.reload('listTableId');
+                                    layer.alert("事务"+data.id+"已重置");
+                                }, function (err) {
+                                    layer.alert("事务"+data.id+"重置失败");
+                                    console.log(err);
+                                });
+                            }else if(menudata.id === 'apply'){
+                                applyTrx(data.id, function (obj) {
+                                    table.reload('listTableId');
+                                    layer.alert("事务"+data.id+"应用成功");
+                                }, function (err) {
+                                    layer.alert("事务"+data.id+"应用失败");
+                                    console.log(err);
+                                });
+                            }
+                        },
+                        align: 'right', // 右对齐弹出
+                        style: 'box-shadow: 1px 1px 10px rgb(0 0 0 / 12%);' // 设置额外样式
+                    });
+
+                    break;
+                default:
+                    break;
+            }
+
+        });
+
+        // 触发表格复选框选择
+        table.on('checkbox(listTableFilter)', function(obj){
+            console.log(obj)
+        });
+
+
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vimisky.luta.applier.mysql.dao.LutaApplierTransactionMapper">
+    <resultMap id="lutaApplierTransactionResultMap" type="io.github.vimisky.luta.applier.mysql.entity.LutaApplierTransaction">
+        <id property="id" column="id" />
+        <result property="applierChannelId" column="applier_channel_id"/>
+        <result property="applierTime" column="applier_time"/>
+        <result property="applierStatus" column="applier_status"/>
+        <result property="dml" column="dml"/>
+        <result property="ddlSql" column="ddl_sql"/>
+        <result property="serverId" column="server_id"/>
+        <result property="binlogFilename" column="binlog_filename"/>
+        <result property="nextPosition" column="next_position"/>
+        <result property="xid" column="xid"/>
+        <result property="schemaName" column="schema_name"/>
+        <result property="tableName" column="table_name"/>
+        <result property="mappingSchemaName" column="mapping_schema_name"/>
+        <result property="mappingTableName" column="mapping_table_name"/>
+        <result property="type" column="type"/>
+        <result property="columnNameList" column="column_name_list"/>
+        <result property="columnValueList" column="column_value_list"/>
+        <result property="oldColumnNameList" column="old_column_name_list"/>
+        <result property="oldColumnValueList" column="old_column_value_list"/>
+        <result property="sql" column="sql"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="findById" resultMap="lutaApplierTransactionResultMap">
+        select `id`, `applier_channel_id`,`applier_time`,`applier_status`,
+        `dml`, `ddl_sql`, `server_id`, `binlog_filename`, `next_position`,`xid`, `schema_name`,`table_name`,`mapping_schema_name`,`mapping_table_name`,`type`,
+        `column_name_list`,`column_value_list`,`old_column_name_list`, `old_column_value_list`, `sql`, `create_time`,`update_time`
+        from `t_applier_transaction`
+        where `id` = #{id}
+    </select>
+    <select id="findByApplierChannelId" resultMap="lutaApplierTransactionResultMap">
+        select `id`, `applier_channel_id`,`applier_time`,`applier_status`,
+        `dml`, `ddl_sql`, `server_id`, `binlog_filename`, `next_position`,`xid`, `schema_name`,`table_name`,`mapping_schema_name`,`mapping_table_name`,`type`,`type`,
+        `column_name_list`,`column_value_list`,`old_column_name_list`, `old_column_value_list`, `sql`, `create_time`,`update_time`
+        from `t_applier_transaction`
+        where `applier_channel_id` = #{applierChannelId}
+    </select>
+    <select id="findBySpecific" resultMap="lutaApplierTransactionResultMap">
+        select `id`, `applier_channel_id`,`applier_time`,`applier_status`,
+        `dml`, `ddl_sql`, `server_id`, `binlog_filename`, `next_position`,`xid`, `schema_name`,`table_name`,`mapping_schema_name`,`mapping_table_name`,`type`,`type`,
+        `column_name_list`,`column_value_list`,`old_column_name_list`, `old_column_value_list`, `sql`, `create_time`,`update_time`
+        from `t_applier_transaction`
+        where
+        `applier_channel_id` = #{applierChannelId}
+        and `server_id` = #{serverId}
+        and  `binlog_filename` = #{binlogFilename}
+        and `next_position` = #{nextPosition}
+        <if test="xid == null">
+            and `xid` is null
+        </if>
+        <if test="xid != null">
+            and `xid` = #{xid}
+        </if>
+        and `sql` = #{sql}
+    </select>
+    <select id="findAll" resultMap="lutaApplierTransactionResultMap">
+        select `id`, `applier_channel_id`,`applier_time`,`applier_status`,
+        `dml`, `ddl_sql`, `server_id`, `binlog_filename`, `next_position`,`xid`, `schema_name`,`table_name`,`mapping_schema_name`,`mapping_table_name`,`type`,`type`,
+        `column_name_list`,`column_value_list`,`old_column_name_list`, `old_column_value_list`, `sql`, `create_time`,`update_time`
+        from `t_applier_transaction`
+    </select>
+    <insert id="insert" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        insert into `t_applier_transaction` (
+        `applier_channel_id`,`applier_time`,`applier_status`,
+        `dml`, `ddl_sql`, `server_id`, `binlog_filename`, `next_position`,`xid`,
+        `schema_name`,`table_name`,`mapping_schema_name`,`mapping_table_name`,`type`,
+        `column_name_list`,`column_value_list`,`old_column_name_list`, `old_column_value_list`, `sql`, `create_time`,`update_time`) values (
+        #{applierChannelId}, #{applierTime}, #{applierStatus},
+        #{dml},#{ddlSql},#{serverId},#{binlogFilename},#{nextPosition},#{xid},
+        #{schemaName},#{tableName},#{mappingSchemaName},#{mappingTableName},#{type},
+        #{columnNameList},#{columnValueList},#{oldColumnNameList},#{oldColumnValueList},#{sql},datetime('now','localtime'),datetime('now','localtime'))
+    </insert>
+    <update id="update">
+        update `t_applier_transaction` set
+        `applier_channel_id` = #{applierChannelId},
+        `applier_time` = #{applierTime},
+        `applier_status` = #{applierStatus},
+        `dml` = #{dml},
+        `ddl_sql` = #{ddlSql},
+        `server_id` = #{serverId},
+        `binlog_filename` = #{binlogFilename},
+        `next_position` = #{nextPosition},
+        `xid` = #{xid},
+        `schema_name` = #{schemaName},
+        `table_name` = #{tableName},
+        `mapping_schema_name` = #{mappingSchemaName},
+        `mapping_table_name` = #{mappingTableName},
+        `type` = #{type},
+        `column_name_list` = #{columnNameList},
+        `column_value_list` = #{columnValueList},
+        `old_column_name_list` = #{oldColumnNameList},
+        `old_column_value_list` = #{oldColumnValueList},
+        `sql` = #{sql},
+<!--        `create_time` = #{createTime},-->
+<!--        https://www.sqlite.org/lang_datefunc.html-->
+        `update_time` = datetime('now','localtime')
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from `t_applier_transaction` where id = #{id}
+    </delete>
+    <delete id="deleteCompletedByChannelId">
+        delete from `t_applier_transaction` where applier_status = 1 and `applier_channel_id` = #{applierChannelId};
+    </delete>
+</mapper>
